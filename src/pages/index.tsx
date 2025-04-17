@@ -320,9 +320,9 @@ export default function Home() {
               Session Tracker
             </h1>
           </Link>
-          <button className="py-2 px-4 border-4 rounded-2xl border-gray-200 text-gray-200 text-base sm:text-lg font-bold cursor-pointer hover:text-[rgb(30,30,30)] hover:bg-gray-200 transition-colors duration-300">
+          <Link href="https://github.com/1fifly/session-tracker-app/releases" className="py-2 px-4 border-4 rounded-2xl border-gray-200 text-gray-200 text-base sm:text-lg font-bold cursor-pointer hover:text-[rgb(30,30,30)] hover:bg-gray-200 transition-colors duration-300">
             DOWNLOAD
-          </button>
+          </Link>
         </header>
         <section className="hero-section w-screen h-screen flex flex-col items-start justify-start px-4 sm:px-6 py-16 bg-[rgb(30,30,30)]">
           <div className="w-full p-4 sm:p-8 md:p-12 lg:p-20">
@@ -336,12 +336,12 @@ export default function Home() {
               Boost your productivity.
             </h4>
             <div className="flex flex-col sm:flex-row justify-start items-center gap-4 sm:gap-6 px-[1%] py-[2%] w-full">
-              <button className="hero-button w-full sm:w-auto py-2 px-4 xl:py-4 xl:px-8 border-4 rounded-2xl bg-[#6B5B95] border-[#6B5B95] text-gray-200 text-base sm:text-lg xl:text-2xl font-bold cursor-pointer hover:bg-[#7f6da9] hover:border-[#7f6da9] transition-colors duration-300">
+              <Link href="https://github.com/1fifly/session-tracker-app/releases" className="hero-button w-full sm:w-auto py-2 px-4 xl:py-4 xl:px-8 border-4 rounded-2xl bg-[#6B5B95] border-[#6B5B95] text-gray-200 text-base sm:text-lg xl:text-2xl font-bold cursor-pointer hover:bg-[#7f6da9] hover:border-[#7f6da9] transition-colors duration-300">
                 DOWNLOAD
-              </button>
-              <button className="hero-button w-full sm:w-auto py-2 px-4 xl:py-4 xl:px-8 border-4 rounded-2xl border-gray-200 text-gray-200 text-base sm:text-lg xl:text-2xl font-bold cursor-pointer hover:text-[rgb(30,30,30)] hover:bg-gray-200 transition-colors duration-300">
+              </Link>
+              <Link href="https://github.com/1fifly/session-tracker-app" className="hero-button w-full sm:w-auto py-2 px-4 xl:py-4 xl:px-8 border-4 rounded-2xl border-gray-200 text-gray-200 text-base sm:text-lg xl:text-2xl font-bold cursor-pointer hover:text-[rgb(30,30,30)] hover:bg-gray-200 transition-colors duration-300">
                 LEARN MORE
-              </button>
+              </Link>
             </div>
           </div>
           {isDesktop && <Scene />}
@@ -533,9 +533,9 @@ export default function Home() {
             Take charge of your time with Session Tracker.
           </p>
           <div className="flex flex-col sm:flex-row gap-4">
-            <button className="get-started py-4 px-8 xl:py-6 xl:px-12 border-4 rounded-xl bg-[#6B5B95] border-[#6B5B95] text-gray-200 text-lg sm:text-xl xl:text-2xl font-semibold cursor-pointer hover:bg-[#7f6da9] hover:border-[#7f6da9] transition-all duration-300 hover:shadow-lg">
+            <Link href="https://github.com/1fifly/session-tracker-app/releases" className="get-started py-4 px-8 xl:py-6 xl:px-12 border-4 rounded-xl bg-[#6B5B95] border-[#6B5B95] text-gray-200 text-lg sm:text-xl xl:text-2xl font-semibold cursor-pointer hover:bg-[#7f6da9] hover:border-[#7f6da9] transition-all duration-300 hover:shadow-lg">
               DOWNLOAD NOW
-            </button>
+            </Link>
           </div>
         </section>
       </main>
