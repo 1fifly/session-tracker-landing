@@ -13,86 +13,110 @@ gsap.registerPlugin(ScrollTrigger);
 
 function Laptop() {
   const gltf = useLoader(GLTFLoader, "/3d/laptop.gltf");
-  const laptopRef = useRef();
-  const mixer = useRef();
-  const action = useRef();
-  const scrollPosition = useRef(0);
+  const laptopRef = useRef<THREE.Object3D>(null);
+  const mixer = useRef<THREE.AnimationMixer | null>(null);
+  const action = useRef<THREE.AnimationAction | null>(null);
+  const scrollPosition = useRef<number>(0);
 
   useEffect(() => {
-    if (gltf.animations && gltf.animations.length) {
-      mixer.current = new THREE.AnimationMixer(gltf.scene);
-      action.current = mixer.current.clipAction(gltf.animations[0]);
-      action.current.setLoop(THREE.LoopOnce);
-      action.current.clampWhenFinished = true;
-      action.current.play();
-      action.current.paused = true;
+    if (gltf.animations && gltf.animations.length > 0) {
+      const firstAnimation = gltf.animations[0];
+      if (firstAnimation) {
+        mixer.current = new THREE.AnimationMixer(gltf.scene);
+        action.current = mixer.current.clipAction(firstAnimation);
+        if (action.current) {
+          action.current.setLoop(THREE.LoopOnce, 1);
+          action.current.clampWhenFinished = true;
+          action.current.play();
+          action.current.paused = true;
+        }
+      }
     }
   }, [gltf]);
 
+  interface Position {
+    x: number;
+    y: number;
+    z: number;
+  }
+  
+  interface Rotation {
+    x: number;
+    y: number;
+    z: number;
+  }
+  
   useEffect(() => {
     const handleScroll = () => {
       scrollPosition.current = window.scrollY;
       const windowHeight = window.innerHeight;
       const totalHeight = windowHeight * 4;
       const scrollProgress = scrollPosition.current / totalHeight;
-
-      const positions = [
+  
+      const positions: Position[] = [
         { x: 3.5, y: -1.25, z: 0 },
         { x: 2.5, y: -1, z: 0 },
         { x: -3.5, y: -1, z: 0 },
         { x: 0, y: -1, z: 0 },
         { x: 0, y: 0, z: 0 },
       ];
-
-      const rotations = [
+  
+      const rotations: Rotation[] = [
         { x: 0, y: -Math.PI / 1.25, z: 0 },
         { x: 0, y: -Math.PI / 1, z: 0 },
         { x: 0, y: 0.1, z: 0 },
         { x: 0, y: -Math.PI / 2, z: 0 },
         { x: 0, y: 0, z: 0 },
       ];
-
+  
       const segment = scrollProgress * 4;
-      const index = Math.min(Math.floor(segment), 3);
+      const index = Math.min(Math.floor(segment), positions.length - 2);
       const t = segment - index;
-
-      const currentPos = {
-        x: positions[index].x + (positions[index + 1].x - positions[index].x) * t,
-        y: positions[index].y + (positions[index + 1].y - positions[index].y) * t,
-        z: positions[index].z + (positions[index + 1].z - positions[index].z) * t,
-      };
-
-      const currentRot = {
-        x: rotations[index].x + (rotations[index + 1].x - rotations[index].x) * t,
-        y: rotations[index].y + (rotations[index + 1].y - rotations[index].y) * t,
-        z: rotations[index].z + (rotations[index + 1].z - rotations[index].z) * t,
-      };
-
-      if (laptopRef.current) {
-        gsap.to(laptopRef.current.position, {
-          x: currentPos.x,
-          y: currentPos.y,
-          z: currentPos.z,
-          duration: 0.5,
-          ease: "power2.out",
-        });
-
-        gsap.to(laptopRef.current.rotation, {
-          x: currentRot.x,
-          y: currentRot.y,
-          z: currentRot.z,
-          duration: 0.5,
-          ease: "power2.out",
-        });
+  
+      const currentPosition = positions[index];
+      const nextPosition = positions[index + 1];
+      const currentRotation = rotations[index];
+      const nextRotation = rotations[index + 1];
+  
+      if (currentPosition && nextPosition && currentRotation && nextRotation) {
+        const currentPos: Position = {
+          x: currentPosition.x + (nextPosition.x - currentPosition.x) * t,
+          y: currentPosition.y + (nextPosition.y - currentPosition.y) * t,
+          z: currentPosition.z + (nextPosition.z - currentPosition.z) * t,
+        };
+  
+        const currentRot: Rotation = {
+          x: currentRotation.x + (nextRotation.x - currentRotation.x) * t,
+          y: currentRotation.y + (nextRotation.y - currentRotation.y) * t,
+          z: currentRotation.z + (nextRotation.z - currentRotation.z) * t,
+        };
+  
+        if (laptopRef.current) {
+          gsap.to(laptopRef.current.position, {
+            x: currentPos.x,
+            y: currentPos.y,
+            z: currentPos.z,
+            duration: 0.5,
+            ease: "power2.out",
+          });
+  
+          gsap.to(laptopRef.current.rotation, {
+            x: currentRot.x,
+            y: currentRot.y,
+            z: currentRot.z,
+            duration: 0.5,
+            ease: "power2.out",
+          });
+        }
       }
-
+  
       if (mixer.current && action.current) {
         const duration = action.current.getClip().duration;
         action.current.time = scrollProgress * duration;
         mixer.current.update(0);
       }
     };
-
+  
     window.addEventListener("scroll", handleScroll);
     handleScroll();
     return () => window.removeEventListener("scroll", handleScroll);
@@ -138,7 +162,7 @@ function Scene() {
         castShadow
       />
       <hemisphereLight
-        skyColor={"#ffffff"}
+        color={"#ffffff"}
         groundColor={"#888888"}
         intensity={1}
       />
@@ -149,17 +173,17 @@ function Scene() {
 
 export default function Home() {
   const [isDesktop, setIsDesktop] = useState(true);
-  const lenisRef = useRef(null);
+  let lenisRef;
 
   useEffect(() => {
     const lenis = new Lenis({
       duration: 1.2,
       easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
-      smooth: true,
+      smoothWheel : true,
     });
-    lenisRef.current = lenis;
+    lenisRef = lenis;
 
-    function raf(time) {
+    function raf(time: number) {
       lenis.raf(time);
       requestAnimationFrame(raf);
     }
